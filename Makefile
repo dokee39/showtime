@@ -46,20 +46,16 @@ ifeq ($(DEBUG), 1)
 	CPPFLAGS += -g -gdwarf-2
 endif
 
-.PHONY: all run clean lib
+.PHONY: all run clean
 .DEFAULT_GOAL := all
-.NOTPARALLEL: lib
 all: $(BUILD_DIR)/$(TARGET)
 
 $(BUILD_DIR)/$(TARGET): $(OBJS) $(STATIC_LIBS) | $(BUILD_DIR)
 	@echo -e "$(YELLOW_BLOD)  ->$(END) $(CYAN)LD$(END) $@"
 	@$(CC) $(OBJS) $(STATIC_LIBS) $(LDFLAGS) -o $@
 
-$(STATIC_LIBS): lib
-
-lib: Makefile | $(BUILD_DIR)
+$(STATIC_LIBS): Makefile | $(BUILD_DIR)
 	@$(MAKE) --no-print-directory -C 3rdparty -j
-	@touch lib
 
 $(BUILD_DIR)/%.c.o: %.c Makefile | $(BUILD_DIR)
 	@echo -e "$(YELLOW_BLOD)  ->$(END) $(GREEN)CC$(END) $<"

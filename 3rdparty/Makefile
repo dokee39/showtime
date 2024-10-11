@@ -27,7 +27,7 @@ DEPS := $(IMGUI_OBJS:.o=.d) $(IMPLOT_OBJS:.o=.d)
 
 CC := g++
 OPT := -std=c++20 -og
-DEF := \
+DEF :=
 
 INC_DIRS := $(shell find . -type d)
 LDFLAGS := \
