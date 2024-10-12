@@ -18,7 +18,8 @@ BUILD_DIR = ../build
 IMGUI_SRCS := \
 $(wildcard imgui/*.cpp) \
 imgui/backends/imgui_impl_glfw.cpp \
-imgui/backends/imgui_impl_opengl3.cpp
+imgui/backends/imgui_impl_opengl3.cpp \
+imgui/misc/freetype/imgui_freetype.cpp
 IMPLOT_SRCS := implot/implot.cpp implot/implot_items.cpp
 
 IMGUI_OBJS := $(IMGUI_SRCS:%=$(BUILD_DIR)/%.o)
@@ -30,6 +31,7 @@ OPT := -std=c++20 -og
 DEF :=
 
 INC_DIRS := $(shell find . -type d)
+INC_DIRS += /usr/include/freetype2
 LDFLAGS := \
 -lGL \
 -lglfw

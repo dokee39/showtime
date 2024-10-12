@@ -35,7 +35,8 @@ LDFLAGS := \
 -ldl \
 -lpthread \
 -lGL \
--lglfw
+-lglfw \
+-lfreetype
 STATIC_LIBS = 3rdparty/lib/libimgui.a 3rdparty/lib/libimplot.a
 
 SRCS += $(shell find $(SRC_DIRS) -name '*.c' -or -name '*.cc' -or -name '*.cpp')
