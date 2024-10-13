@@ -1,0 +1,14 @@
+[tab1]
+port = 14514
+
+[tab1.plot1]
+var1 = {color = 'blue', width = 0.5, filled = false}
+var2 = {color = 'red', width = 0.25, filled = true}
+[tab1.plot2]
+var1 = {color = 'green', width = 1, filled = false}
+
+[tab2]
+port = 14514
+
+[tab2.plot1]
+var1 = {color = 'blue', width = 0.5, filled = false}
