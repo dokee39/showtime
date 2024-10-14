@@ -1,17 +1,40 @@
-[tab1]
+use_tab = false
+font_size = 16
+
+[group1]
+height_of_each = 300
 port = 14514
 
-[tab1.plot1]
-var1 = {color = [1, 1, 0, 1], width = 0.5, filled = false, buffer_size = 5000}
-var2 = {width = 0.25, filled = true}
+[group1.plot1]
+roll = {color = [0.22, 0.77, 0.73, 0.75], width = 1.5, filled = false, buffer_size = 5000}
+pitch = {color = [0.5, 0.5, 0, 0.2], width = 1, filled = true}
+yaw = {color = [0, 1, 0, 0.5], width = 2}
 
-[tab1.plot2]
-var1 = {width = 1}
+[group1.plot2]
+var1 = {color = [0, 0, 1, 0.25], width = 1}
 
-[tab2]
+[group2]
 port = 14514
 
-[tab2.plot1]
-var1 = {filled = false}
+[group2.plot1]
+var2 = {}
+var1 = {filled = true}
+
+[group3.plot1]
+var2 = {}
+
+[group4.plot1]
+var2 = {}
+
+[group5.plot1]
+var2 = {}
+
+[group6.plot1]
+var2 = {}
+
+[group7.plot1]
+var2 = {}
+
+[group8.plot1]
 var2 = {}
 

@@ -1,12 +1,24 @@
+#include <iostream>
+
 #include "ui.hpp"
 #include "plot.hpp"
+#include "default_param.hpp"
 
 int main(int, char**)
 {
-    GLFWwindow *window = ui::glfwWindowInit();
-    ImGuiIO &io = ui::imguiInit(window);
+    toml::table cfg;
+    plot::Plot* plot;
+    try {
+        cfg = toml::parse_file("./showtime.toml");
+        plot = new plot::Plot(cfg);
+    }catch (const toml::parse_error &err) {
+        std::cerr << R"(Parsing your config failed!)" << std::endl;
+        std::cerr << err << std::endl;
+        exit(1);
+    }
 
-    auto plot = new plot::Plot();
+    GLFWwindow *window = ui::glfwWindowInit();
+    ImGuiIO &io = ui::imguiInit(window, cfg["font_size"].value_or(param::FONT_SIZE));
 
     // Main loop
 #ifdef __EMSCRIPTEN__
@@ -25,12 +37,7 @@ int main(int, char**)
         }
 
         ui::loopStart(window, io);
-
-        if (ImGui::BeginTabBar("ShowtimeTabs")) {
-            plot->plot();
-            ImGui::EndTabBar();
-        }
-        
+        plot->plot();
         ui::loopEnd(window, io);
     }
 #ifdef __EMSCRIPTEN__

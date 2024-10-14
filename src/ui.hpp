@@ -10,7 +10,7 @@
 
 namespace ui {
 GLFWwindow *glfwWindowInit();
-ImGuiIO &imguiInit(GLFWwindow* window);
+ImGuiIO &imguiInit(GLFWwindow* window, float font_size);
 void loopStart(GLFWwindow *window, ImGuiIO &io);
 void loopEnd(GLFWwindow *window, ImGuiIO &io);
 void cleanup(GLFWwindow *window);

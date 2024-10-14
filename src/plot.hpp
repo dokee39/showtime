@@ -7,7 +7,7 @@
 #include <vector>
 #include <map>
 
-#include "imgui.h"
+#include "imgui/imgui.h"
 #include "implot/implot.h"
 
 namespace plot {
@@ -28,24 +28,55 @@ public:
     void erase();
 };
 
-class Tab {
+class Group {
 public:
-    explicit Tab(const std::string_view &name, const toml::table &cfg);
-    ~Tab() = default;
+    explicit Group(const std::string_view &name,
+                   const toml::table &cfg,
+                   const bool &t_sync,
+                   const float &history_sync,
+                   bool &pause,
+                   bool &auto_fit,
+                   ImPlotRange &lims);
+    ~Group() = default;
 
     const std::string name;
     const int port;
+    const int height_of_each;
+    float history = 5.0f;
+    float history_max = 30.0f;
     std::vector<Var> vars;
     std::map<std::string, int> var_table;
+
+private:
+    const bool &t_sync;
+    const float &history_sync;
+    const bool &pause;
+    const bool &auto_fit;
+    ImPlotRange &lims;
 };
 
 class Plot {
 public: 
-    explicit Plot(const std::string &cfg_path = "./showtime.toml");
+    explicit Plot(const toml::table &cfg);
     ~Plot() = default;
 
-    std::vector<Tab> tabs;
-
     void plot();
+
+private:
+    const bool use_tab;
+    bool pause = false;
+    bool t_sync = true;
+    bool auto_fit = true;
+    bool link_axis_x = true;
+    float history_sync = 5.0f;
+    float history_sync_max = 30.0f;
+    ImPlotRange lims {0.0, 5.0};
+    std::vector<Group> groups;
+
+    void plotGroup(Group &group, bool pause, bool auto_fit);
+    void plotGroup(Group &group);
+    void plotVar(Var &Var);
 };
+
+
 }

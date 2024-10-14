@@ -2,6 +2,8 @@
 #include <cmath>
 
 #include "ui.hpp"
+#include "imgui.h"
+#include "default_param.hpp"
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
 #pragma comment(lib, "legacy_stdio_definitions")
@@ -47,7 +49,7 @@ GLFWwindow *glfwWindowInit() {
     return window;
 }
 
-ImGuiIO &imguiInit(GLFWwindow* window) {
+ImGuiIO &imguiInit(GLFWwindow* window, float font_size) {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -57,7 +59,8 @@ ImGuiIO &imguiInit(GLFWwindow* window) {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
     // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
+    ImGui::StyleColorsClassic();
+    //ImGui::StyleColorsDark();
     //ImGui::StyleColorsLight();
 
     // Setup Platform/Renderer backends
@@ -73,8 +76,11 @@ ImGuiIO &imguiInit(GLFWwindow* window) {
     cfg.OversampleH = cfg.OversampleV = 100;
     cfg.FontBuilderFlags |= ImGuiFreeTypeBuilderFlags_ForceAutoHint;
     cfg.FontBuilderFlags |= ImGuiFreeTypeBuilderFlags_Bitmap;
-    ImFont* font = io.Fonts->AddFontFromFileTTF("/usr/share/fonts/TTF/HackNerdFontMono-Regular.ttf", 18.0f, &cfg);
+    ImFont* font = io.Fonts->AddFontFromFileTTF("/usr/share/fonts/TTF/HackNerdFontMono-Regular.ttf", font_size, &cfg);
     IM_ASSERT(font != nullptr);
+
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.Colors[ImGuiCol_WindowBg] = param::WINDOW_BG;
 
     return io;
 }
@@ -100,8 +106,6 @@ void loopStart(GLFWwindow *window, ImGuiIO &io) {
         ImGui::TextWrapped("WARNING: ImDrawIdx is 16-bit and ImGuiBackendFlags_RendererHasVtxOffset is false. Expect visual glitches and artifacts! See README for more information.");
         ImGui::PopStyleColor();
     }
-
-    ImGui::Spacing();
 }
 
 void loopEnd(GLFWwindow *window, ImGuiIO &io) {
@@ -110,7 +114,8 @@ void loopEnd(GLFWwindow *window, ImGuiIO &io) {
     ImVec2 window_size = ImGui::GetWindowSize();
     ImVec2 text_size = ImGui::CalcTextSize("FPS: xxx.x");
     
-    ImGui::SetCursorPos(ImVec2(window_size.x - text_size.x - 10, window_size.y - text_size.y - 10));
+    ImGui::SetCursorPos(ImVec2(ImGui::GetScrollX() + window_size.x - text_size.x - 20,
+                               ImGui::GetScrollY() + window_size.y - text_size.y - 10));
     ImGui::Text("FPS %.1f", io.Framerate);
 
     ImGui::End();
