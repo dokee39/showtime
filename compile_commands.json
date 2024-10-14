@@ -13,6 +13,26 @@
    "-Wall",
    "-g",
    "-gdwarf-2",
+   "src/plot.cc",
+   "-o",
+   "build/src/plot.cc.o"
+  ],
+  "file": "src/plot.cc"
+ },
+ {
+  "directory": "/home/dokee/Documents/robomaster/projects/showtime",
+  "arguments": [
+   "g++",
+   "-c",
+   "-Isrc",
+   "-I3rdparty",
+   "-I3rdparty/imgui",
+   "-I3rdparty/imgui/backends",
+   "-std=c++20",
+   "-og",
+   "-Wall",
+   "-g",
+   "-gdwarf-2",
    "src/ui.cc",
    "-o",
    "build/src/ui.cc.o"
@@ -38,5 +58,25 @@
    "build/src/main.cc.o"
   ],
   "file": "src/main.cc"
+ },
+ {
+  "directory": "/home/dokee/Documents/robomaster/projects/showtime",
+  "arguments": [
+   "g++",
+   "-c",
+   "-Isrc",
+   "-I3rdparty",
+   "-I3rdparty/imgui",
+   "-I3rdparty/imgui/backends",
+   "-std=c++20",
+   "-og",
+   "-Wall",
+   "-g",
+   "-gdwarf-2",
+   "src/socket.cc",
+   "-o",
+   "build/src/socket.cc.o"
+  ],
+  "file": "src/socket.cc"
  }
 ]

@@ -2,13 +2,16 @@
 port = 14514
 
 [tab1.plot1]
-var1 = {color = 'blue', width = 0.5, filled = false}
-var2 = {color = 'red', width = 0.25, filled = true}
+var1 = {color = [1, 1, 0, 1], width = 0.5, filled = false, buffer_size = 5000}
+var2 = {width = 0.25, filled = true}
+
 [tab1.plot2]
-var1 = {color = 'green', width = 1, filled = false}
+var1 = {width = 1}
 
 [tab2]
 port = 14514
 
 [tab2.plot1]
-var1 = {color = 'blue', width = 0.5, filled = false}
+var1 = {filled = false}
+var2 = {}
+
