@@ -1,5 +1,6 @@
 #include <chrono>
 #include <unistd.h>
+#include "util.hpp"
 
 namespace util {
 double getTime() {
@@ -11,4 +12,3 @@ double getTime() {
     return t;
 }
 }
-

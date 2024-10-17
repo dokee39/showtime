@@ -5,12 +5,12 @@ font_size = 16
 height_of_each = 300
 port = 14514
 
-[group1.plot1]
-roll = {color = [0.22, 0.77, 0.73, 0.75], width = 1.5, filled = false, buffer_size = 5000}
+[group1.plot2]
+roll = {id = 0, color = [0.22, 0.77, 0.73, 0.75], width = 1.5, filled = false, buffer_size = 5000}
 pitch = {color = [0.5, 0.5, 0, 0.2], width = 1, filled = true}
 yaw = {color = [0, 1, 0, 0.5], width = 2}
 
-[group1.plot2]
+[group1.plot1]
 var1 = {color = [0, 0, 1, 0.25], width = 1}
 
 [group2]
@@ -23,10 +23,10 @@ var1 = {filled = true}
 [group3.plot1]
 var2 = {}
 
-[group4.plot1]
+[group5.plot1]
 var2 = {}
 
-[group5.plot1]
+[group4.plot1]
 var2 = {}
 
 [group6.plot1]

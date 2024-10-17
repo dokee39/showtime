@@ -3,7 +3,7 @@
 #include "plot.hpp"
 #include "default_param.hpp"
 #include "implot/implot.h"
-#include "utils.hpp"
+#include "util.hpp"
 
 namespace plot {
 Var::Var(const std::string_view &name, const toml::table &cfg):
@@ -72,7 +72,6 @@ Plot::Plot(const toml::table &cfg):
 }
 
 void Plot::plot() {
-    // use_tab_or_tree   sync_history  auto_fit_all
     ImGui::SeparatorText("Options");
 
     bool pause_tmp = pause;

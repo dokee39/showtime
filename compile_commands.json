@@ -53,11 +53,11 @@
    "-Wall",
    "-g",
    "-gdwarf-2",
-   "src/utils.cc",
+   "src/util.cc",
    "-o",
-   "build/src/utils.cc.o"
+   "build/src/util.cc.o"
   ],
-  "file": "src/utils.cc"
+  "file": "src/util.cc"
  },
  {
   "directory": "/home/dokee/Documents/robomaster/projects/showtime",
