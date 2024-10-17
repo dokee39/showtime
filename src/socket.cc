@@ -1,5 +1,7 @@
+#include <iostream>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <netinet/in.h>
 
 #include "socket.hpp"
 
@@ -25,35 +27,30 @@ Socket::~Socket() {
     close(sockfd);
 }
 
-int Socket::read(std::tuple<std::string_view, int> &key, char *data) {
+int Socket::read(std::tuple<in_addr_t, int> &key, char *data) {
     sockaddr_in cli_addr;
     socklen_t cli_addr_len = sizeof(cli_addr);
     auto len = recvfrom(sockfd, data, 256, MSG_WAITALL, (sockaddr *)&cli_addr, &cli_addr_len);
     if (len > 0) {
-        char ip_str[16];
-        inet_ntop(AF_INET, &(cli_addr.sin_addr), ip_str, INET_ADDRSTRLEN);
         int port = ntohs(cli_addr.sin_port);
-        key = std::make_tuple(ip_str, port);
+        key = std::make_tuple(cli_addr.sin_addr.s_addr, port);
     }
     return len;
 }
 
-bool Socket::send(const std::tuple<std::string_view, int> &key, const std::string& message) {
-    std::string_view ip = std::get<0>(key);
+bool Socket::send(const std::tuple<in_addr_t, int> &key, const std::string& message) {
+    in_addr_t ip = std::get<0>(key);
     int port = std::get<1>(key);
 
     sockaddr_in to_addr;
     memset(&to_addr, 0, sizeof(to_addr));
     to_addr.sin_family = AF_INET;
     to_addr.sin_port = htons(port);
-    if (inet_pton(AF_INET, ip.data(), &to_addr.sin_addr) <= 0) {
-        std::cerr << "Invalid IP address: " << ip << std::endl << std::endl;
-        return false;
-    }
+    to_addr.sin_addr.s_addr = ip;
 
     auto n = sendto(sockfd, message.c_str(), message.size(), MSG_CONFIRM, reinterpret_cast<const sockaddr*>(&to_addr), sizeof(to_addr));
     if (n < 0) {
-        std::clog << "[IO<" + name + ">] Failed to send to client, key: " << ip << ":" << port << "." << std::endl;
+        std::clog << "[IO<" + name + ">] Failed to send to client, key: " << inet_ntoa(to_addr.sin_addr) << ":" << port << "." << std::endl;
         return false;
     }
 
