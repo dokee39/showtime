@@ -3,7 +3,6 @@
 
 #include "socket.hpp"
 
-namespace robo {
 namespace io {
 Socket::Socket(const std::string &name, const int port, const int buffer_size):
     IoKey(name, buffer_size),
@@ -59,7 +58,6 @@ bool Socket::send(const std::tuple<std::string_view, int> &key, const std::strin
     }
 
     return true;
-}
 }
 }
 

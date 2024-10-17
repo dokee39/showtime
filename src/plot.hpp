@@ -9,6 +9,8 @@
 
 #include "imgui/imgui.h"
 #include "implot/implot.h"
+#include "socket.hpp"
+#include "dev.hpp"
 
 namespace plot {
 class Var {
@@ -55,9 +57,21 @@ private:
     ImPlotRange &lims;
 };
 
+class VarGetter: public dev::Dev<io::Socket> {
+public:
+    explicit VarGetter(const std::string &name, io::Socket &socket, const std::tuple<std::string_view, int> &io_key):
+        Dev(name, socket, io_key) {
+        
+        
+    }
+
+private:
+};
+
 class Plot {
 public: 
     explicit Plot(const toml::table &cfg);
+    /*explicit Plot(const io::Socket &socket, const toml::table &cfg);*/
     ~Plot() = default;
 
     void plot();
@@ -72,6 +86,9 @@ private:
     float history_sync_max = 30.0f;
     ImPlotRange lims {0.0, 5.0};
     std::vector<Group> groups;
+
+    /*const io::Socket &socket;*/
+    std::vector<VarGetter> var_getters;
 
     void plotGroup(Group &group, bool pause, bool auto_fit);
     void plotGroup(Group &group);

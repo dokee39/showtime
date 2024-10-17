@@ -8,7 +8,6 @@
 
 #include "io.hpp"
 
-namespace robo {
 namespace io {
 class Socket: public IoKey<std::tuple<std::string_view, int>> {
 public:
@@ -23,6 +22,5 @@ private:
     sockaddr_in my_addr;
     std::map<int, sockaddr_in> clients;
 };
-}
 }
 

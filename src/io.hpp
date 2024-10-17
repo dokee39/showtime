@@ -4,11 +4,10 @@
 #include <functional>
 #include <string>
 #include <thread>
-#include <unordered_map>
+#include <map>
 
 #include "util.hpp"
 
-namespace robo {
 namespace io {
 class Io {
 public:
@@ -32,7 +31,6 @@ public:
         running = true;
         thread = new std::thread([this]() { thread_func(); });
     }
-
     void stop() {
         running = false;
         if (thread != nullptr) {
@@ -41,8 +39,9 @@ public:
         }
     }
 
-protected:
     const std::string name;
+
+protected:
     const int buffer_size;
     char *buffer;
     std::atomic<bool> running {false};
@@ -62,7 +61,9 @@ public:
     }
     ~IoKey() override = default;
 
-    std::unordered_map<Tkey, std::function<void (const char *, const int len)>> unpackers;
+    using io_key = Tkey;
+
+    std::map<Tkey, std::function<void (const char *, const int len)>> unpackers;
 
     virtual int read(Tkey &key, char *data) = 0;
 
@@ -91,6 +92,5 @@ private:
         }
     }
 };
-}
 }
 
