@@ -3,38 +3,42 @@ font_size = 16
 
 [group1]
 height_of_each = 300
+host = "localhost"
 port = 14514
 
-[group1.plot2]
-roll = {id = 0, color = [0.22, 0.77, 0.73, 0.75], width = 1.5, filled = false, buffer_size = 5000}
-pitch = {color = [0.5, 0.5, 0, 0.2], width = 1, filled = true}
-yaw = {color = [0, 1, 0, 0.5], width = 2}
+[group1.graph1]
+name = "angle"
+var1 = {name = "roll", color = [0.22, 0.77, 0.73, 0.75], width = 1.5, filled = false, buffer_size = 5000}
+var2 = {name = "pitch", color = [0.5, 0.5, 0, 0.2], width = 1, filled = true}
+var3 = {name = "yaw", color = [0, 1, 0, 0.5], width = 2}
 
-[group1.plot1]
-var1 = {color = [0, 0, 1, 0.25], width = 1}
+[group1.graph2]
+var4 = {color = [0, 0, 1, 0.25], width = 1}
 
 [group2]
 port = 14514
 
-[group2.plot1]
-var2 = {}
-var1 = {filled = true}
+[group2.graph1]
+2 = {}
+1 = {filled = true}
+foo = "baka"
+foo_var = {}
 
-[group3.plot1]
-var2 = {}
-
-[group5.plot1]
-var2 = {}
-
-[group4.plot1]
+[group3.graph1]
 var2 = {}
 
-[group6.plot1]
+[group5.graph1]
 var2 = {}
 
-[group7.plot1]
+[group4.graph1]
 var2 = {}
 
-[group8.plot1]
+[group6.graph1]
+var2 = {}
+
+[group7.graph1]
+var2 = {}
+
+[group8.graph1]
 var2 = {}
 

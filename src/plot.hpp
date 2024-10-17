@@ -6,6 +6,7 @@
 #include <cmath>
 #include <vector>
 #include <map>
+#include <tuple>
 
 #include "imgui/imgui.h"
 #include "implot/implot.h"
@@ -32,13 +33,7 @@ public:
 
 class Group {
 public:
-    explicit Group(const std::string_view &name,
-                   const toml::table &cfg,
-                   const bool &t_sync,
-                   const float &history_sync,
-                   bool &pause,
-                   bool &auto_fit,
-                   ImPlotRange &lims);
+    explicit Group(const std::string_view &name, const toml::table &cfg);
     ~Group() = default;
 
     const std::string name;
@@ -47,26 +42,22 @@ public:
     float history = 5.0f;
     float history_max = 30.0f;
     std::vector<Var> vars;
-    std::map<std::string, int> var_table;
-
-private:
-    const bool &t_sync;
-    const float &history_sync;
-    const bool &pause;
-    const bool &auto_fit;
-    ImPlotRange &lims;
+    std::vector<std::tuple<std::string, int>> graph_table;
 };
 
-class VarGetter: public dev::Dev<io::Socket> {
-public:
-    explicit VarGetter(const std::string &name, io::Socket &socket, const std::tuple<std::string_view, int> &io_key):
-        Dev(name, socket, io_key) {
-        
-        
-    }
-
-private:
-};
+/*class VarGetter: public dev::Dev<io::Socket> {*/
+/*public:*/
+/*    explicit VarGetter(io::Socket &socket, const std::tuple<std::string_view, int> &io_key):*/
+/*        Dev(std::string(std::get<0>(io_key)) + ":" + std::to_string(std::get<1>(io_key)), socket, io_key) {*/
+/*    }*/
+/**/
+/*private:*/
+/*    std::map<int, Var *> vars;*/
+/**/
+/*    virtual bool unpack(const char *data, const int len) override {*/
+/*        return true;*/
+/*    }*/
+/*};*/
 
 class Plot {
 public: 
@@ -78,6 +69,7 @@ public:
 
 private:
     const bool use_tab;
+    bool title = false;
     bool pause = false;
     bool t_sync = true;
     bool auto_fit = true;
@@ -88,9 +80,8 @@ private:
     std::vector<Group> groups;
 
     /*const io::Socket &socket;*/
-    std::vector<VarGetter> var_getters;
+    /*std::vector<VarGetter> var_getters;*/
 
-    void plotGroup(Group &group, bool pause, bool auto_fit);
     void plotGroup(Group &group);
     void plotVar(Var &Var);
 };

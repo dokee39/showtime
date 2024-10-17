@@ -31,32 +31,26 @@ void Var::erase() {
     }
 }
 
-Group::Group(const std::string_view &name,
-             const toml::table &cfg,
-             const bool &t_sync,
-             const float &history_sync,
-             bool &pause,
-             bool &auto_fit,
-             ImPlotRange &lims):
+Group::Group(const std::string_view &name, const toml::table &cfg):
     name(name),
     port(cfg["port"].value_or(param::PORT)),
-    height_of_each(cfg["height_of_each"].value_or(param::HEIGHT_OF_EACH)),
-    t_sync(t_sync), 
-    history_sync(history_sync),
-    pause(pause),
-    auto_fit(auto_fit),
-    lims(lims) {
+    height_of_each(cfg["height_of_each"].value_or(param::HEIGHT_OF_EACH)) {
     for (const auto &[key, value]: cfg) {
         if (!value.is_table()) {
             continue;
         }
-        var_table.insert(std::pair<std::string, int>(key, value.as_table()->size()));
-        for (const auto &[key_, value_]: *value.as_table()) {
+        int var_num = 0;
+        auto graph_cfg = *value.as_table();
+        for (const auto &[key_, value_]: graph_cfg) {
             if (!value_.is_table()) {
-                std::cerr << "Error config: " << key << "." << key_ << std::endl;
-                exit(1);
+                continue;
             }
-            vars.emplace_back(key_, *value_.as_table());
+            auto var_cfg = *value_.as_table();
+            vars.emplace_back(var_cfg["name"].value_or(std::string(key_)), var_cfg);
+            var_num++;
+        }
+        if (var_num) {
+            graph_table.emplace_back(std::make_tuple(graph_cfg["name"].value_or(std::string(key)), var_num));
         }
     }
 }
@@ -67,7 +61,7 @@ Plot::Plot(const toml::table &cfg):
         if (!value.is_table()) {
             continue;
         }
-        groups.emplace_back(key, *value.as_table(), t_sync, history_sync, pause, auto_fit, lims);
+        groups.emplace_back(key, *value.as_table());
     }
 }
 
@@ -75,6 +69,8 @@ void Plot::plot() {
     ImGui::SeparatorText("Options");
 
     bool pause_tmp = pause;
+    ImGui::Checkbox("Title", &title);
+    ImGui::SameLine();
     ImGui::Checkbox("Pause", &pause);
     ImGui::SameLine();
     ImGui::Checkbox("Time Sync", &t_sync);
@@ -135,13 +131,13 @@ void Plot::plotGroup(Group &group) {
         group.history = history_sync;
     }
 
-    if (!ImPlot::BeginSubplots("", group.var_table.size(), 1, ImVec2(-1, group.height_of_each * group.var_table.size()), ImPlotSubplotFlags_LinkAllX)) {
+    if (!ImPlot::BeginSubplots("", group.graph_table.size(), 1, ImVec2(-1, group.height_of_each * group.graph_table.size()), pause ? 0 : ImPlotSubplotFlags_LinkAllX)) {
         return;
     }
 
     int var_id = 0;
-    for (const auto &[key, value]: group.var_table) {
-        if (!ImPlot::BeginPlot((group.name + "." + key).c_str(), ImVec2(-1,300),ImPlotFlags_NoTitle | ImPlotFlags_Crosshairs)) {
+    for (const auto &[key, value]: group.graph_table) {
+        if (!ImPlot::BeginPlot((group.name + "." + key).c_str(), ImVec2(-1,300), (title ? 0 : ImPlotFlags_NoTitle) | ImPlotFlags_Crosshairs)) {
             continue;
         }
         ImPlot::SetupAxes(nullptr, nullptr, flags_x, flags_y);
