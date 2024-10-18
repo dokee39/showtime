@@ -1,4 +1,6 @@
-#include <iostream>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <tuple>
 
 #include "plot.hpp"
 #include "default_param.hpp"
@@ -34,7 +36,8 @@ void Var::erase() {
 Group::Group(const std::string_view &name, const toml::table &cfg):
     name(name),
     port(cfg["port"].value_or(param::PORT)),
-    height_of_each(cfg["height_of_each"].value_or(param::HEIGHT_OF_EACH)) {
+    height_of_each(cfg["height_of_each"].value_or(param::HEIGHT_OF_EACH)),
+    use_gui_time(cfg["use_gui_time"].value_or(param::USE_GUI_TIME)) {
     for (const auto &[key, value]: cfg) {
         if (!value.is_table()) {
             continue;
@@ -55,13 +58,81 @@ Group::Group(const std::string_view &name, const toml::table &cfg):
     }
 }
 
-Plot::Plot(const toml::table &cfg): 
-    use_tab(cfg["use_tab"].value_or(param::USE_TAB)) {
+VarGetter::VarGetter(io::Socket &socket, const std::tuple<in_addr_t, int> &io_key):
+    Dev(std::string(inet_ntoa((in_addr)std::get<0>(io_key))) + ":" + std::to_string(std::get<1>(io_key)), socket, io_key) {
+}
+
+bool VarGetter::unpack(const char *data, const int len) {
+    struct Data {
+        int32_t id;
+        float t;
+        float* var;
+    };
+
+    if (len <= (int)(sizeof(int32_t) + sizeof(float))) {
+        return false;
+    }
+
+    Data d;
+    d.id = *(int32_t *)(data);
+    d.t = *(float *)(data + sizeof(int32_t));
+    d.var = (float *)(const_cast<char *>(data + sizeof(int32_t) + sizeof(float)));
+    int var_size = (len - sizeof(int32_t) - sizeof(float)) / sizeof(float);
+
+    auto it = groups.find(d.id);
+    if (it == groups.end()) {
+        return false;
+    }
+    Group &group = *it->second;
+    if (var_size != (int)group.vars.size()) {
+        return false;
+    }
+
+    if (group.use_gui_time) {
+        d.t = util::getTime();
+    }
+
+    int i = 0;
+    for (auto &var: group.vars) {
+        var.addPoint(d.t, d.var[i]);
+        i++;
+    }
+
+    return true;
+}
+
+Plot::Plot(io::Socket &socket, const toml::table &cfg): 
+    use_tab(cfg["use_tab"].value_or(param::USE_TAB)),
+    socket(socket) {
     for (const auto &[key, value]: cfg) {
         if (!value.is_table()) {
             continue;
         }
-        groups.emplace_back(key, *value.as_table());
+        auto group_cfg = *value.as_table();
+        groups.emplace_back(key, group_cfg);
+
+        in_addr_t ip = util::to_in_addr(cfg["host"].value_or(param::HOST));
+        int port = group_cfg["port"].value_or(param::PORT);
+        auto vargetter_key = std::make_tuple(ip, port);
+
+        int group_id = group_cfg["id"].value_or(param::GROUP_ID);
+
+        bool is_vargetter_added = false;
+        for (auto &var_getter: var_getters) {
+            if (vargetter_key == var_getter.getIoKey()) {
+                auto it = var_getter.groups.find(group_id);
+                if (it != var_getter.groups.end()) {
+                    std::cerr << "Groups from the same client has the same id: " << group_id << std::endl;
+                    exit(1);
+                }
+                var_getter.groups.emplace(group_id, &groups.back());
+                is_vargetter_added = true;
+            }
+        }
+        if (!is_vargetter_added) {
+            var_getters.emplace_back(socket, vargetter_key);
+            var_getters.back().groups.emplace(group_id, &groups.back());
+        }
     }
 }
 

@@ -38,7 +38,7 @@ int Socket::read(std::tuple<in_addr_t, int> &key, char *data) {
     return len;
 }
 
-bool Socket::send(const std::tuple<in_addr_t, int> &key, const std::string& message) {
+bool Socket::send(const std::tuple<in_addr_t, int> &key, const char *message, const int len) {
     in_addr_t ip = std::get<0>(key);
     int port = std::get<1>(key);
 
@@ -48,7 +48,7 @@ bool Socket::send(const std::tuple<in_addr_t, int> &key, const std::string& mess
     to_addr.sin_port = htons(port);
     to_addr.sin_addr.s_addr = ip;
 
-    auto n = sendto(sockfd, message.c_str(), message.size(), MSG_CONFIRM, reinterpret_cast<const sockaddr*>(&to_addr), sizeof(to_addr));
+    auto n = sendto(sockfd, message, len, MSG_CONFIRM, reinterpret_cast<const sockaddr*>(&to_addr), sizeof(to_addr));
     if (n < 0) {
         std::clog << "[IO<" + name + ">] Failed to send to client, key: " << inet_ntoa(to_addr.sin_addr) << ":" << port << "." << std::endl;
         return false;

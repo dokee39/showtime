@@ -28,6 +28,10 @@ public:
     }
     virtual ~Dev() = default;
 
+    const typename IO::key_type getIoKey() {
+        return io_key;
+    }
+
     const std::string name;
 
 protected:

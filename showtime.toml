@@ -1,10 +1,14 @@
 use_tab = false
 font_size = 16
+socket_port = 39393
+socket_buffer_size = 100000
 
 [group1]
 height_of_each = 300
 host = "localhost"
 port = 14514
+id = 1
+use_gui_time = false
 
 [group1.graph1]
 name = "angle"
@@ -16,6 +20,7 @@ var3 = {name = "yaw", color = [0, 1, 0, 0.5], width = 2}
 var4 = {color = [0, 0, 1, 0.25], width = 1}
 
 [group2]
+id = 2
 port = 14514
 
 [group2.graph1]
@@ -24,21 +29,19 @@ port = 14514
 foo = "baka"
 foo_var = {}
 
+[group3]
+id = 3
 [group3.graph1]
+name = "foo"
 var2 = {}
 
+[group5]
+id = 5
 [group5.graph1]
 var2 = {}
 
+[group4]
+id = 4
 [group4.graph1]
-var2 = {}
-
-[group6.graph1]
-var2 = {}
-
-[group7.graph1]
-var2 = {}
-
-[group8.graph1]
 var2 = {}
 

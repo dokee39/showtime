@@ -3,14 +3,17 @@
 #include "ui.hpp"
 #include "plot.hpp"
 #include "default_param.hpp"
+#include "socket.hpp"
 
 int main(int, char**)
 {
     toml::table cfg;
     plot::Plot* plot;
+    io::Socket* socket;
     try {
         cfg = toml::parse_file("./showtime.toml");
-        plot = new plot::Plot(cfg);
+        socket = new io::Socket("socket", cfg["port"].value_or(param::SOCKET_PORT), cfg["socket_buffer_size"].value_or(param::SOCKET_BUFFERSIZE));
+        plot = new plot::Plot(*socket, cfg);
     }catch (const toml::parse_error &err) {
         std::cerr << R"(Parsing your config failed!)" << std::endl;
         std::cerr << err << std::endl;
@@ -45,6 +48,7 @@ int main(int, char**)
 #endif
 
     ui::cleanup(window);
+    delete socket;
     delete plot;
 
     return 0;

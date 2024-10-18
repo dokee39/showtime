@@ -13,7 +13,7 @@ public:
     ~Socket() override;
 
     int read(std::tuple<in_addr_t, int> &key, char *data) override;
-    bool send(const std::tuple<in_addr_t, int> &key, const std::string& message);
+    bool send(const std::tuple<in_addr_t, int> &key, const char *message, const int len);
 
 private:
     int sockfd;

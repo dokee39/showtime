@@ -15,7 +15,6 @@ END := \033[0m
 TARGET := $(shell basename "$$PWD")
 
 DEBUG := 1
-USE_WEBOTS := 1
 
 CC := g++
 OPT := -std=c++20 -og
