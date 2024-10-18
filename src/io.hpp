@@ -25,12 +25,13 @@ public:
     }
 
     void run() {
-        if (thread == nullptr) {
+        if (thread != nullptr) {
             std::cerr << "[IO<" + name + ">] Repeated run an IO!" << std::endl;
             return;
         }
         running = true;
         thread = new std::thread([this]() { thread_func(); });
+        std::cout << "[IO<" + name + ">] Start running..." << std::endl;
     }
     void stop() {
         running = false;
@@ -69,8 +70,6 @@ public:
     virtual int read(Tkey &key, char *data) = 0;
 
 private:
-    std::atomic<bool> running;
-
     void thread_func() override {
         while (running) {
             int len;

@@ -15,6 +15,7 @@ Var::Var(const std::string_view &name, const toml::table &cfg):
     filled(cfg["filled"].value_or(param::FILLED)),
     buffer_size(cfg["buffer_size"].value_or(param::BUFFER_SIZE)) {
     data.reserve(buffer_size);
+    addPoint(0.0f, 0.0f);
 }
 
 void Var::addPoint(float x, float y) {
@@ -89,12 +90,14 @@ bool VarGetter::unpack(const char *data, const int len) {
     }
 
     if (group.use_gui_time) {
-        d.t = util::getTime();
+        group.time = util::getTime();
+    } else {
+        group.time = d.t;
     }
 
     int i = 0;
     for (auto &var: group.vars) {
-        var.addPoint(d.t, d.var[i]);
+        var.addPoint(group.time, d.var[i]);
         i++;
     }
 
@@ -212,17 +215,17 @@ void Plot::plotGroup(Group &group) {
             continue;
         }
         ImPlot::SetupAxes(nullptr, nullptr, flags_x, flags_y);
-        ImVec2 mouse = ImGui::GetMousePos();
-        double t = util::getTime();
+        /*ImVec2 mouse = ImGui::GetMousePos();*/
+        /*double t = util::getTime();*/
 
         if (!pause) {
-            ImPlot::SetupAxisLimits(ImAxis_X1, t - group.history, t, ImGuiCond_Always);
+            ImPlot::SetupAxisLimits(ImAxis_X1, group.time - group.history, group.time, ImGuiCond_Always);
         } else {
             ImPlot::SetupAxisLinks(ImAxis_X1, link_axis_x ? &lims.Min : nullptr, link_axis_x ? &lims.Max : nullptr);
         }
 
         for (int i = 0; i < value; i++) {
-            group.vars[var_id].addPoint(t, (i + 1) * mouse.y * 0.0005f);
+            /*group.vars[var_id].addPoint(t, (i + 1) * mouse.y * 0.0005f);*/
             plotVar(group.vars[var_id]);
             var_id++;
         }

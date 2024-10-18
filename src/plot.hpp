@@ -41,6 +41,7 @@ public:
     const int port;
     const int height_of_each;
     const bool use_gui_time;
+    float time = 0.0f;
     float history = 5.0f;
     float history_max = 30.0f;
     std::vector<Var> vars;

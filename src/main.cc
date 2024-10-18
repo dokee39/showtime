@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sys/socket.h>
 
 #include "ui.hpp"
 #include "plot.hpp"
@@ -22,6 +23,8 @@ int main(int, char**)
 
     GLFWwindow *window = ui::glfwWindowInit();
     ImGuiIO &io = ui::imguiInit(window, cfg["font_size"].value_or(param::FONT_SIZE));
+
+    socket->run();
 
     // Main loop
 #ifdef __EMSCRIPTEN__
@@ -48,6 +51,8 @@ int main(int, char**)
 #endif
 
     ui::cleanup(window);
+
+    socket->stop();
     delete socket;
     delete plot;
 
